@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Ranchers&display=swap");
+
 .App {
   text-align: center;
 }
@@ -22,6 +24,7 @@
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
+  font-family: 'Ranchers', cursive;
 }
 
 .App-link {
