@@ -19,73 +19,100 @@ async function stageTest() {
     const page = await browser.newPage();
     await page.goto('http://localhost:3010');
 
-    //await sleep(1000000);
+    await sleep(1000);
     page.on('console', msg => console.log(msg.text()));
 
     let result = await hs.testPage(page,
         () => {
-            if (document.getElementById('root').textContent === "Minesweeper is loading...") {
-                return hs.correct();
-            } else {
-                return hs.wrong("There should be a text 'Minesweeper is loading...' ");
-            }
-        },
-        () => {
-            let result = hs.wrong("The font should be changed.");
+            let isPresent = {
+                flagCounter: false,
+                resetBtn: false,
+                clock: false
+            };
 
+            let divs = new Map();
+            let pointerClasses = new Map();
             Array.from(document.getElementsByTagName("*")).forEach( element => {
-                if (element.tagName !== "HTML" && element.innerText === 'Minesweeper is loading...') {
-                    // console.log(element.tagName," ",window.getComputedStyle(element).fontFamily)
-                    if (window.getComputedStyle(element).fontFamily !== "-apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Fira Sans\", \"Droid Sans\", \"Helvetica Neue\", sans-serif") {
-                        result = hs.correct()
-                    }
+                if (element.children.length > 1 ||
+                    element.tagName === "SCRIPT" ||
+                    element.tagName === "LINK" ||
+                    element.tagName === "META" ||
+                    element.tagName === "STYLE" ||
+                    element.tagName === "NOSCRIPT") return;
+
+                let text = element.innerText;
+
+                if(text.includes('10'))
+                    isPresent.flagCounter = true;
+                if(text.includes('0:00'))
+                    isPresent.clock = true;
+                if (text === '') {
+                    let width = window.getComputedStyle(element).width;
+                    let height = window.getComputedStyle(element).height;
+                    let divName = element.className;
+
+                    if (width === height)
+                        divs.has(divName) ?
+                            divs.set(divName, divs.get(divName)+1) :
+                            divs.set(divName, 1)
+                }
+
+                if (window.getComputedStyle(element).cursor === "pointer") {
+                    let [tag, className] = [element.tagName ,element.className];
+
+                    pointerClasses.has((tag, className)) ?
+                        pointerClasses.set((tag, className), pointerClasses.get((tag, className)) + 1) :
+                        pointerClasses.set((tag, className), 1);
                 }
             });
 
-            return result;
-        },
-        () => {
-            let imgs = document.getElementsByTagName('img');
-            if (imgs.length !== 1) {
-                return hs.wrong("Only one picture should be on the page")
+            if (!isPresent.flagCounter) {
+                return hs.wrong("There should be a flag counter that equals to '10'.")
+            }
+            if (pointerClasses.length === 0) {
+                return hs.wrong("There should be a reset button and if you hover the mouse over it, the cursor should change to the pointer.")
+            }
+            if (!isPresent.clock) {
+                return hs.wrong("There should be a timer that equals to '0:00'.")
+            }
+            //------------------------------------------------------------------------------------------------------
+            divs = Array.from(divs);
+            let cellClass = divs.find(([k, v]) => v === 72);
+            if (!cellClass) {
+              return hs.wrong("The field should contain 72 square cells with no inner elements inside.")
             }
 
-            try {
-                let canvas = document.createElement('canvas');
-                canvas.width = imgs[0].width;
-                canvas.height = imgs[0].height;
-                canvas.getContext('2d').drawImage(imgs[0], 0,0,imgs[0].width, imgs[0].height)
-                let pixelColor = canvas.getContext('2d').getImageData(imgs[0].width/2,imgs[0].height/2, 1, 1).data
-                let logoPixelColor = [97,218,251];
-                if (logoPixelColor[0] === pixelColor[0] &&
-                    logoPixelColor[1] === pixelColor[1] &&
-                    logoPixelColor[2] === pixelColor[2]) {
 
-                    return hs.wrong("There shouldn't be the React logo on the page");
-                }
+            let cells = Array.from(document.getElementsByClassName("cell"));
+
+            if (cells.length === 0) {
+                return hs.wrong("Cells should have className='cell'");
             }
-            catch (e) {
-                return hs.correct();
-            }
+
+            let rows = new Map();
+            let columns = new Map();
+            cells.forEach(cell => {
+                let top = cell.getBoundingClientRect().top;
+                let left = cell.getBoundingClientRect().left;
+
+                rows.has(top) ?
+                    rows.set(top, rows.get(top)+1) :
+                    rows.set(top, 1);
+
+                columns.has(left) ?
+                    columns.set(left, columns.get(left)+1) :
+                    columns.set(left, 1)
+            });
+
+            rows = Array.from(rows);
+            let isWrongRow = rows.find( ([k, v]) => v !== 8);
+            if (isWrongRow) return hs.wrong("Each row of the field should contain 8 cells.");
+
+            columns = Array.from(columns);
+            let isWrongColumn = columns.find( ([k, v]) => v !== 9);
+            if (isWrongColumn) return hs.wrong("Each column of the field should contain 9 cells.")
 
             return hs.correct();
-        },
-        () => {
-            let result = hs.wrong();
-
-            Array.from(document.getElementsByTagName("*")).forEach( element => {
-                if ( element.children.length === 2 && element.innerText === "Minesweeper is loading...") {
-                    let style = window.getComputedStyle(element);
-                    if (style.display === "flex" &&
-                        style.flexDirection === "column" &&
-                        style.alignItems === "center" &&
-                        style.justifyContent === "center") {
-                        result = hs.correct();
-                    }
-                }
-            });
-
-            return result;
         }
     );
 
@@ -105,4 +132,3 @@ test("Test stage", async () => {
         fail(result['message']);
     }
 });
-
