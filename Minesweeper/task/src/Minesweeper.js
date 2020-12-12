@@ -1,4 +1,5 @@
 import React from "react";
+import "./Minesweeper.css"
 import logo from "./asset/logo.svg";
 
 export default Minesweeper;
