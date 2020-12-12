@@ -6,8 +6,13 @@ export default Minesweeper;
 //todo
 function Minesweeper() {
     return <div className={"minesweeper"}>
-        <ControlPanel/>
-        <Field/>
+        <ControlPanel
+            flagsNum={10}
+            timeElapsed={"0:00"}
+        />
+        <Field
+            rowsArr={Array(9).fill(Array(8).fill(null))}
+        />
     </div>;
 }
 
@@ -22,7 +27,6 @@ function Field(props) {
     </div>;
 }
 
-//todo Should it know its row number?
 function Row(props) {
     return <div className={"row"}>
         {props.rowArr.map((element, index) =>
@@ -39,10 +43,13 @@ function Cell(props) {
     </button>;
 }
 
-function ControlPanel() {
+function ControlPanel(props) {
     return <div className={"control-panel"}>
         <LogoPanel/>
-        <StatusPanel/>
+        <StatusPanel
+            flagsNum={props.flagsNum}
+            timeElapsed={props.timeElapsed}
+        />
     </div>;
 }
 
@@ -53,11 +60,17 @@ function LogoPanel() {
     </div>;
 }
 
-function StatusPanel() {
+function StatusPanel(props) {
     return <div className={"statusPanel"}>
-        <FlagsCounter/>
-        <button className={"reset"}>Reset</button>
-        <Timer/>
+        <FlagsCounter
+            flagsNum={props.flagsNum}
+        />
+        <button
+            className={"reset"}>Reset
+        </button>
+        <Timer
+            timeElapsed={props.timeElapsed}
+        />
     </div>;
 }
 
