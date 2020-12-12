@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Ranchers&display=swap");
 
-.game {
+.minesweeper {
     display: flex;
     flex-direction: column;
     justify-content: center;

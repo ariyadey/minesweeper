@@ -1,15 +1,13 @@
+import React from "react";
 import logo from "./asset/logo.svg";
 
 export default Minesweeper;
 
 //todo
 function Minesweeper() {
-    return <div className={"game"}>
+    return <div className={"minesweeper"}>
         <ControlPanel/>
-        <Field
-            // rowsArr={this.state.boardMatrix}
-            rowsArr={Array(9).fill(Array(8).fill(null))}
-        />
+        <Field/>
     </div>;
 }
 
