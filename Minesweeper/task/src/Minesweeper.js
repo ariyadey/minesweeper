@@ -65,10 +65,13 @@ function FlagsCounter() {
 }
 
 function Reset() {
+    return <button className={"reset"}>
+        Reset
+    </button>;
 }
 
 function Timer(props) {
     return <title>
         {props.timeElapsed}
-    </title>
+    </title>;
 }
