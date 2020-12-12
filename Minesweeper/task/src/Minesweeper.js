@@ -72,7 +72,7 @@ function Reset() {
 }
 
 function Timer(props) {
-    return <p>
+    return <p className={"timer"}>
         {props.timeElapsed}
     </p>;
 }
