@@ -62,6 +62,7 @@ function Row(props) {
 }
 
 function FlagsCounter() {
+
 }
 
 function Reset() {
@@ -71,7 +72,7 @@ function Reset() {
 }
 
 function Timer(props) {
-    return <title>
+    return <p>
         {props.timeElapsed}
-    </title>;
+    </p>;
 }
