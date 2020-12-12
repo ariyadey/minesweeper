@@ -11,13 +11,6 @@ function Minesweeper() {
     </div>;
 }
 
-function ControlPanel() {
-    return <div className={"control-panel"}>
-        <BrandPanel/>
-        <StatusPanel/>
-    </div>;
-}
-
 function Field(props) {
     return <div className={"field"}>
         {props.rowsArr.map((rowArr, rowNum) =>
@@ -27,27 +20,6 @@ function Field(props) {
                 rowArr={rowArr}
             />)}
     </div>;
-}
-
-function StatusPanel() {
-    return <div className={"statusPanel"}>
-        <FlagsCounter/>
-        <Reset/>
-        <Timer/>
-    </div>
-}
-
-function BrandPanel() {
-    return <div className={"logo-panel"}>
-        <p className={"app-name"}>Minesweeper</p>
-        <img src={logo} className="app-logo" alt="logo" />
-    </div>;
-}
-
-function Cell(props) {
-    return <button className={"cell"}>
-        {props.value}
-    </button>;
 }
 
 //todo Should it know its row number?
@@ -61,14 +33,39 @@ function Row(props) {
     </div>;
 }
 
-function FlagsCounter() {
-
+function Cell(props) {
+    return <button className={"cell"}>
+        {props.value}
+    </button>;
 }
 
-function Reset() {
-    return <button className={"reset"}>
-        Reset
-    </button>;
+function ControlPanel() {
+    return <div className={"control-panel"}>
+        <LogoPanel/>
+        <StatusPanel/>
+    </div>;
+}
+
+function LogoPanel() {
+    return <div className={"logo-panel"}>
+        <p className={"app-name"}>Minesweeper</p>
+        <img src={logo} className="app-logo" alt="logo" />
+    </div>;
+}
+
+function StatusPanel() {
+    return <div className={"statusPanel"}>
+        <FlagsCounter/>
+        <button className={"reset"}>Reset</button>
+        <Timer/>
+    </div>;
+}
+
+//todo consider merging this method with timer
+function FlagsCounter(props) {
+    return <p className={"flags-counter"}>
+        {props.flagsNum}
+    </p>;
 }
 
 function Timer(props) {
