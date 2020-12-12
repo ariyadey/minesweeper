@@ -5,8 +5,22 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: #222725;
     height: 100vh;
+}
+
+.control-panel {
+    display: flex;
+    flex-direction: column;
+}
+
+.logo-panel {
+    display: flex;
+    flex-direction: row;
+}
+
+.app-name {
+    font-family: "Ranchers", cursive;
+    color: white;
 }
 
 .app-logo {
@@ -27,6 +41,21 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+.status-panel {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.flags-counter .timer {
+    color: white;
+}
+
+.reset {
+    border: solid;
+    background: white;
 }
 
 .field {
