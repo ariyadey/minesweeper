@@ -1,0 +1,46 @@
+@import url("https://fonts.googleapis.com/css2?family=Ranchers&display=swap");
+
+.game {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: #222725;
+    height: 100vh;
+}
+
+.app-logo {
+    height: 7vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .app-logo {
+        animation: app-logo-spin infinite 20s linear;
+    }
+}
+
+@keyframes app-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.field {
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.cell {
+    background: black;
+    border: solid thin;
+    height: 6vmin;
+    padding: 0;
+    width: 6vmin;
+}
