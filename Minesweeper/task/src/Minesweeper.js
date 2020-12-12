@@ -67,5 +67,8 @@ function FlagsCounter() {
 function Reset() {
 }
 
-function Timer() {
+function Timer(props) {
+    return <title>
+        {props.timeElapsed}
+    </title>
 }
