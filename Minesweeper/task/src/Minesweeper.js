@@ -75,7 +75,7 @@ function StatusPanel(props) {
     </div>;
 }
 
-//todo consider merging this method with timer
+//todo: Consider merging this method with timer
 function FlagsCounter(props) {
     return <p className={"flags-counter"}>
         {props.flagsNum}
@@ -99,6 +99,7 @@ function Field(props) {
     </div>;
 }
 
+//todo: Consider removing Row and merge with Field
 function Row(props) {
     return <div className={"row"}>
         {props.rowArr.map((element, index) =>
