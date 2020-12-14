@@ -4,16 +4,44 @@ import logo from "./asset/logo.svg";
 
 export default Minesweeper;
 
-function Minesweeper() {
-    return <div className={"minesweeper"}>
-        <ControlPanel
-            flagsNum={10}
-            timeElapsed={"0:00"}
-        />
-        <Field
-            rowsArr={Array(9).fill(Array(8).fill(null))}
-        />
-    </div>;
+class Minesweeper extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        const rows = 9, columns = 8, mines = 10;
+        this.state = {
+            field: this.getRandomField(rows, columns, mines),
+        }
+    }
+
+    render() {
+        return <div className={"minesweeper"}>
+            <ControlPanel
+                flagsNum={10}
+                timeElapsed={"0:00"}
+            />
+            <Field
+                rowsArr={this.state.field}
+            />
+        </div>;
+    }
+
+    //todo: Optimize it
+    getRandomField = (rows, columns, mines) => {
+        const rowsArr = Array(rows).fill(Array(columns).fill(
+            {
+                mine: false
+            }));
+        let minesPut = 0;
+        while (minesPut < mines) {
+            const row = Math.floor(Math.random() * (rows - 0 + 1));
+            const column = Math.floor(Math.random() * (columns - 0 + 1));
+            if (!rowsArr[row][column].mine) {
+                rowsArr[row][column].mine = true;
+                minesPut++;
+            }
+        }
+        return rowsArr;
+    };
 }
 
 function ControlPanel(props) {
@@ -29,7 +57,7 @@ function ControlPanel(props) {
 function LogoPanel() {
     return <div className={"logo-panel"}>
         <p className={"app-name"}>Minesweeper</p>
-        <img src={logo} className="app-logo" alt="logo" />
+        <img src={logo} className="app-logo" alt="logo"/>
     </div>;
 }
 
