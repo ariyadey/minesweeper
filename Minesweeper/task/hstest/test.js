@@ -19,11 +19,16 @@ async function stageTest() {
     const page = await browser.newPage();
     await page.goto('http://localhost:3010');
 
-    await sleep(1000);
     page.on('console', msg => console.log(msg.text()));
 
     let result = await hs.testPage(page,
         () => {
+            function eventFire(e, type) {
+                let event = document.createEvent('Event');
+                event.initEvent(type, true, false);
+                e.dispatchEvent(event);
+            }
+
             let isPresent = {
                 flagCounter: false,
                 resetBtn: false,
@@ -32,13 +37,14 @@ async function stageTest() {
 
             let divs = new Map();
             let pointerClasses = new Map();
+
             Array.from(document.getElementsByTagName("*")).forEach( element => {
                 if (element.children.length > 1 ||
                     element.tagName === "SCRIPT" ||
                     element.tagName === "LINK" ||
                     element.tagName === "META" ||
                     element.tagName === "STYLE" ||
-                    element.tagName === "NOSCRIPT") return;
+                    element.tagName === "NOSCRIPT" ) return;
 
                 let text = element.innerText;
 
@@ -47,6 +53,7 @@ async function stageTest() {
                 if(text.includes('0:00'))
                     isPresent.clock = true;
                 if (text === '') {
+
                     let width = window.getComputedStyle(element).width;
                     let height = window.getComputedStyle(element).height;
                     let divName = element.className;
@@ -76,12 +83,14 @@ async function stageTest() {
                 return hs.wrong("There should be a timer that equals to '0:00'.")
             }
             //------------------------------------------------------------------------------------------------------
+
             divs = Array.from(divs);
             let cellClass = divs.find(([k, v]) => v === 72);
             if (!cellClass) {
-              return hs.wrong("The field should contain 72 square cells with no inner elements inside.")
+                return hs.wrong("The field should contain 72 square cells with no inner elements inside.")
             }
 
+            //------------------------------------------------------------------------------------------------------
 
             let cells = Array.from(document.getElementsByClassName("cell"));
 
@@ -112,9 +121,47 @@ async function stageTest() {
             let isWrongColumn = columns.find( ([k, v]) => v !== 9);
             if (isWrongColumn) return hs.wrong("Each column of the field should contain 9 cells.")
 
+            //------------------------------------------------------------------------------------------------------
+
+            let result = true;
+            let arr = [1,2,3];
+            arr.forEach( (i, ind) => {
+                let cell = document.getElementsByClassName("cell")[i];
+
+                let border = window.getComputedStyle(cell).border;
+                let outline = window.getComputedStyle(cell).outline;
+                let backgroundColor = window.getComputedStyle(cell).backgroundColor;
+
+                eventFire(cell,'click');
+                let newOutline = window.getComputedStyle(cell).outline;
+                let newBorder = window.getComputedStyle(cell).border;
+                let newBackgroundColor = window.getComputedStyle(cell).backgroundColor;
+                if (outline === newOutline &&
+                    border === newBorder &&
+                    backgroundColor === newBackgroundColor) {
+                    result = false
+                }
+            });
+            if(!result) return hs.wrong("The opened cell should look different");
+
+            arr = [4,5,6];
+            arr.forEach( (i, ind) => {
+                let cell = document.getElementsByClassName("cell")[i];
+
+                eventFire(cell,'contextmenu');
+                let backgroundImage = window.getComputedStyle(cell).backgroundImage;
+                if (cell.children.length === 0 &&
+                    backgroundImage === "none" ) {
+                    result = false
+                }
+            });
+            if(!result) return hs.wrong("The flagged cell should look different.");
+
             return hs.correct();
         }
     );
+
+    await sleep(3000);
 
     await browser.close();
     return result;
@@ -132,3 +179,4 @@ test("Test stage", async () => {
         fail(result['message']);
     }
 });
+
