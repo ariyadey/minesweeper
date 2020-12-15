@@ -4,9 +4,7 @@ import logo from "./asset/logo.svg";
 import fired from "./asset/fired.svg";
 import target from "./asset/target.svg";
 
-export default Minesweeper;
-
-class Minesweeper extends React.Component {
+export default class Minesweeper extends React.Component {
     constructor(props, context) {
         super(props, context);
         const rows = 9, columns = 8, mines = 10;
