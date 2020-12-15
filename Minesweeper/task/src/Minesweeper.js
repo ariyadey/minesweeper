@@ -36,8 +36,8 @@ export default class Minesweeper extends React.Component {
             }));
         let minesPut = 0;
         while (minesPut < mines) {
-            const row = Math.floor(Math.random() * (rows - 0 + 1));
-            const column = Math.floor(Math.random() * (columns - 0 + 1));
+            const row = Math.floor(Math.random() * (rows));
+            const column = Math.floor(Math.random() * (columns));
             if (!rowsArr[row][column].mine) {
                 rowsArr[row][column].mine = true;
                 minesPut++;
