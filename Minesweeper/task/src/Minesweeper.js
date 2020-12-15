@@ -28,12 +28,13 @@ export default class Minesweeper extends React.Component {
 
     //todo: Optimize it
     getRandomField = (rows, columns, mines) => {
-        const rowsArr = Array(rows).fill(Array(columns).fill(
-            {
-                opened: false,
-                flagged: false,
-                mine: false,
-            }));
+        const rowsArr = [...Array(rows)]
+            .map(() => [...Array(columns)]
+                .map(() => ({
+                    opened: false,
+                    flagged: false,
+                    mine: false,
+                })));
         let minesPut = 0;
         while (minesPut < mines) {
             const row = Math.floor(Math.random() * (rows));
