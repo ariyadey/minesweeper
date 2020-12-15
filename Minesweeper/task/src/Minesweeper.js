@@ -23,6 +23,7 @@ class Minesweeper extends React.Component {
             />
             <Field
                 rowsArr={this.state.field}
+                onClick={(clickType, row, column) => this.handleClick(clickType, row, column)}
             />
         </div>;
     }
@@ -45,6 +46,13 @@ class Minesweeper extends React.Component {
             }
         }
         return rowsArr;
+    };
+
+    //todo: Complete it
+    handleClick = (clickType, row, column) => {
+        // if (!this.state.opened) {
+        //     if ()
+        // }
     };
 }
 
@@ -99,6 +107,7 @@ function Field(props) {
                 key={rowNum}
                 rowNum={rowNum}
                 rowArr={rowArr}
+                onClick={(clickType, column) => props.onClick(clickType, rowNum, column)}
             />)}
     </div>;
 }
@@ -109,14 +118,35 @@ function Row(props) {
         {props.rowArr.map((element, index) =>
             <Cell
                 key={`r${props.rowNum}_c${index}`}
-                value={element}
+                cell={element}
+                onClick={(clickType) => props.onClick(clickType, index)}
             />)}
     </div>;
 }
 
 //todo: Consider handling the clicks on disabled cells right here
 function Cell(props) {
-    return <button className={"cell"}>
-        {props.value}
+    const flagImage = <img className={"flag"} alt={"flag"} src={target}/>;
+    const mineImage = <img className={"mine"} alt={"mine"} src={fired}/>;
+    const openedClear = <div className={"opened-clear"}/>;
+
+    let cellStatus = null;
+    if (props.cell.opened) {
+        if (props.cell.mine) {
+            cellStatus = mineImage;
+        } else {
+            cellStatus = openedClear;
+        }
+    } else if (props.cell.flagged) {
+        cellStatus = flagImage;
+    }
+
+    return <button
+        className={"cell"}
+        onClick={() => props.onClick("left")}
+        onContextMenu={() => props.onClick("right")}
+    >
+        {/*todo: Ensure passing null isn't problematic*/}
+        {cellStatus}
     </button>;
 }
