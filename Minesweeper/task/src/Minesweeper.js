@@ -31,7 +31,9 @@ class Minesweeper extends React.Component {
     getRandomField = (rows, columns, mines) => {
         const rowsArr = Array(rows).fill(Array(columns).fill(
             {
-                mine: false
+                opened: false,
+                flagged: false,
+                mine: false,
             }));
         let minesPut = 0;
         while (minesPut < mines) {
