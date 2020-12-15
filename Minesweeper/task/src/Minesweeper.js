@@ -114,6 +114,7 @@ function Row(props) {
     </div>;
 }
 
+//todo: Consider handling the clicks on disabled cells right here
 function Cell(props) {
     return <button className={"cell"}>
         {props.value}
