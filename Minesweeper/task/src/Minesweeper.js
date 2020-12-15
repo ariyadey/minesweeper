@@ -48,11 +48,22 @@ class Minesweeper extends React.Component {
         return rowsArr;
     };
 
-    //todo: Complete it
     handleClick = (clickType, row, column) => {
-        // if (!this.state.opened) {
-        //     if ()
-        // }
+        const field = this.state.field.slice();
+        if (field.opened) return;    //Field has been opened before
+        if (clickType === "left") {
+            field[row][column] = {
+                opened: true,
+                flagged: false,
+            }
+        } else if (clickType === "right") {
+            field[row][column] = {
+                flagged: true,
+            }
+        }
+        this.setState({
+            field
+        });
     };
 }
 
