@@ -47,21 +47,18 @@ export default class Minesweeper extends React.Component {
         return rowsArr;
     };
 
+    //todo: Make the game more usable by modifying conditions
     handleClick = (clickType, row, column) => {
         const field = this.state.field.slice();
         if (field.opened) return;    //Field has been opened before
         if (clickType === "left") {
-            field[row][column] = {
-                opened: true,
-                flagged: false,
-            }
+            field[row][column].opened = true;
+            field[row][column].flagged = false;
         } else if (clickType === "right") {
-            field[row][column] = {
-                flagged: true,
-            }
+            field[row][column].flagged = true;
         }
         this.setState({
-            field
+            field: field,
         });
     };
 }
@@ -154,7 +151,10 @@ function Cell(props) {
     return <button
         className={"cell"}
         onClick={() => props.onClick("left")}
-        onContextMenu={() => props.onClick("right")}
+        onContextMenu={(e) => {
+            e.preventDefault();
+            return props.onClick("right");
+        }}
     >
         {/*todo: Ensure passing null isn't problematic*/}
         {cellStatus}
