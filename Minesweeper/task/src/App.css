@@ -104,26 +104,28 @@
 
 .cell {
     background: black;
-    border: solid thin;
+    border: #222725 outset thin;
     border-radius: 10%;
     height: 6vmin;
     padding: 0;
     width: 6vmin;
+    box-shadow: 0 0 5px 1px var(--accent-color);
 }
 
 .opened-clear {
-    box-shadow: 0 0 5px 3px var(--accent-color);
-    background: white;
-    height: 5vmin;
-    width: 5vmin;
+    box-shadow: 0 0 5px 1px var(--accent-color);
+    background: var(--background-color);
+    height: inherit;
+    width: inherit;
     margin: 0;
     padding: 0;
 }
 
 .mine {
-
+    height: inherit;
 }
 
 .flag {
-
+    height: inherit;
+    color: red;
 }
