@@ -14,15 +14,17 @@ export default class Minesweeper extends React.Component {
     }
 
     render() {
-        return <div className={"minesweeper"}>
-            <ControlPanel
-                flagsNum={10}
-                timeElapsed={"0:00"}
-            />
-            <Field
-                rowsArr={this.state.field}
-                onClick={(clickType, row, column) => this.handleClick(clickType, row, column)}
-            />
+        return <div className={"body"}>
+            <div className={"main-block"}>
+                <ControlPanel
+                    flagsNum={10}
+                    timeElapsed={"0:00"}
+                />
+                <Field
+                    rowsArr={this.state.field}
+                    onClick={(clickType, row, column) => this.handleClick(clickType, row, column)}
+                />
+            </div>
         </div>;
     }
 
