@@ -1,0 +1,127 @@
+/*todo: https://www.w3schools.com/csS/css3_flexbox_responsive.asp*/
+
+@import url("https://fonts.googleapis.com/css2?family=Ranchers&display=swap");
+
+:root {
+    --accent-color: #b8004d;
+    --background-color: #222725;
+    --white-color: white;
+}
+
+.body {
+    background: var(--background-color);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-block {
+    padding: 10px;
+    box-shadow: 0 0 10px 5px var(--accent-color);
+    border-radius: 5px;
+}
+
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    font-size: 10vmin;
+}
+
+.logo-panel {
+    margin: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.app-name {
+    font-family: "Ranchers", cursive;
+    color: var(--white-color);
+    font-size: 50%;
+    margin: 0;
+    padding: 1vmin;
+}
+
+.app-logo {
+    height: 7vmin;
+    /*pointer-events: none;*/
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .app-logo {
+        animation: app-logo-spin infinite 20s linear;
+    }
+}
+
+@keyframes app-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.status-panel {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 0 5vmin;
+    font-size: 100%;
+}
+
+.flags-counter, .timer {
+    color: var(--white-color);
+    font-family: "Ranchers", cursive;
+    font-size: 30%;
+}
+
+.reset {
+    font-family: "Ranchers", cursive;
+    font-size: 30%;
+    border-style: hidden;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 3px var(--accent-color);
+    background: var(--background-color);
+    color: var(--white-color);
+    align-self: center;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+    /*align-items: center;*/
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+}
+
+.cell {
+    background: black;
+    border: solid thin;
+    border-radius: 10%;
+    height: 6vmin;
+    padding: 0;
+    width: 6vmin;
+}
+
+.opened-clear {
+    box-shadow: 0 0 5px 3px var(--accent-color);
+    background: white;
+    height: 5vmin;
+    width: 5vmin;
+    margin: 0;
+    padding: 0;
+}
+
+.mine {
+
+}
+
+.flag {
+
+}
