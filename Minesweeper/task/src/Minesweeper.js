@@ -158,7 +158,6 @@ function Cell(props) {
             return props.onClick("right");
         }}
     >
-        {/*todo: Ensure passing null isn't problematic*/}
         {cellStatus}
     </button>;
 }
