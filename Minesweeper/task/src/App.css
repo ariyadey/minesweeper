@@ -103,7 +103,7 @@
 }
 
 .cell {
-    background: black;
+    background: var(--background-color);
     border: #222725 outset thin;
     border-radius: 10%;
     height: 6vmin;
@@ -114,7 +114,7 @@
 
 .opened-clear {
     box-shadow: 0 0 5px 1px var(--accent-color);
-    background: var(--background-color);
+    background: black;
     height: inherit;
     width: inherit;
     margin: 0;
