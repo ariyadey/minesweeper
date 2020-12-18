@@ -55,9 +55,7 @@ export default class Minesweeper extends React.Component {
         return rowsArr;
     };
 
-    //todo: Add conditions for starting and ending the game
     //todo: Make the game more usable by modifying conditions
-    //todo: Test it
     handleClick = (clickType, row, column) => {
         const field = this.state.field.slice();
         const status = {...this.state.status};
@@ -67,7 +65,6 @@ export default class Minesweeper extends React.Component {
             status,
         });
 
-        //todo: Test it
         function updateState() {
             const cell = field[row][column];
             if (status.gameEnded || cell.opened) return;
@@ -131,6 +128,7 @@ class Timer extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        //todo: Figure out why the following line of code is problematic
         // super.componentDidUpdate(prevProps, prevState);
         if (!this.props.status.gameEnded &&
             this.props.status.gameStarted &&
@@ -138,27 +136,11 @@ class Timer extends React.Component {
             this.setState(({
                 startDate: Date.now(),
             }));
-            this.timerId = setInterval(this.updateTimeElapsed, 1000); //todo: Does it work? <-
+            this.timerId = setInterval(this.updateTimeElapsed, 1000);
         }
-        if (this.state.gameEnded) {
-            clearTimeout(this.timerId);
+        if (this.props.status.gameEnded) {
+            clearInterval(this.timerId);
         }
-    }
-
-    componentDidMount() {
-        console.log(this.state.startDate);
-        console.log(this.state.timeElapsed);
-        if (!this.props.status.gameEnded &&
-            this.props.status.gameStarted) {
-            this.setState(({
-                startDate: Date.now(),
-            }));
-            this.timerId = setInterval(this.updateTimeElapsed, 1000); //todo: Does it work? <-
-        }
-    }
-
-    componentWillUnmount() {
-        clearTimeout(this.timerId);
     }
 
     render() {
@@ -168,9 +150,7 @@ class Timer extends React.Component {
     }
 
     updateTimeElapsed = () => {
-        console.log(this.state.startDate);
-        console.log(this.state.timeElapsed);
-        this.setState((state, props) => ({
+        this.setState((state) => ({
             timeElapsed: Math.floor((Date.now() - state.startDate) / 1000),
         }));
     };
@@ -217,6 +197,7 @@ function Cell(props) {
         cellStatus = flagImage;
     }
 
+    //todo: Use className and Id properly to pass the test
     return <button
         className={"cell"}
         onClick={() => props.onClick("left")}
