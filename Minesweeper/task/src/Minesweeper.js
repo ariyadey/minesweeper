@@ -23,7 +23,7 @@ export default class Minesweeper extends React.Component {
         return <div className={"body"}>
             <div className={"main-block"}>
                 <ControlPanel
-                    flagsNum={10}
+                    remainedFlags={this.getRemainedFlags()}
                     status={this.state.status}
                 />
                 <Field
@@ -76,13 +76,26 @@ export default class Minesweeper extends React.Component {
             } else if (clickType === "right") cell.flagged = true;
         }
     };
+
+    getRemainedFlags = () => {
+        let flags = 0;
+        for (const row of this.state.field) {
+            for (const element of row) {
+                if (element.flagged) {
+                    flags++;
+                }
+            }
+        }
+        //todo: The following line of code is hard-coded
+        return flags <= 10 ? 10 - flags : 0;
+    };
 }
 
 function ControlPanel(props) {
     return <div className={"control-panel"}>
         <LogoPanel/>
         <StatusPanel
-            flagsNum={props.flagsNum}
+            remainedFlags={props.remainedFlags}
             status={props.status}
         />
     </div>;
@@ -98,7 +111,7 @@ function LogoPanel() {
 function StatusPanel(props) {
     return <div className={"status-panel"}>
         <FlagsCounter
-            flagsNum={props.flagsNum}
+            remainedFlags={props.remainedFlags}
         />
         <button
             className={"reset"}>Reset
@@ -112,7 +125,7 @@ function StatusPanel(props) {
 //todo: Consider merging this method with timer
 function FlagsCounter(props) {
     return <p className={"flags-counter"}>
-        {props.flagsNum}
+        {props.remainedFlags}
     </p>;
 }
 
