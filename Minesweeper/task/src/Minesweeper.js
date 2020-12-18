@@ -83,7 +83,6 @@ function ControlPanel(props) {
         <LogoPanel/>
         <StatusPanel
             flagsNum={props.flagsNum}
-            // timeElapsed={props.timeElapsed}
             status={props.status}
         />
     </div>;
@@ -105,7 +104,6 @@ function StatusPanel(props) {
             className={"reset"}>Reset
         </button>
         <Timer
-            // timeElapsed={props.timeElapsed}
             status={props.status}
         />
     </div>;
