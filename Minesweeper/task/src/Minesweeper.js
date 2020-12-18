@@ -1,3 +1,5 @@
+//todo: Use react hooks
+
 import React from "react";
 import "./App.css";
 import logo from "./asset/logo.svg";
