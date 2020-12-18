@@ -12,6 +12,10 @@ export default class Minesweeper extends React.Component {
         const rows = 9, columns = 8, mines = 10;
         this.state = {
             field: this.getRandomField(rows, columns, mines),
+            status: {
+                gameStarted: false,
+                gameEnded: false,
+            },
         }
     }
 
@@ -20,7 +24,7 @@ export default class Minesweeper extends React.Component {
             <div className={"main-block"}>
                 <ControlPanel
                     flagsNum={10}
-                    timeElapsed={"0:00"}
+                    status={this.state.status}
                 />
                 <Field
                     rowsArr={this.state.field}
@@ -51,19 +55,29 @@ export default class Minesweeper extends React.Component {
         return rowsArr;
     };
 
+    //todo: Add conditions for starting and ending the game
     //todo: Make the game more usable by modifying conditions
+    //todo: Test it
     handleClick = (clickType, row, column) => {
         const field = this.state.field.slice();
-        if (field.opened) return;    //Field has been opened before
-        if (clickType === "left") {
-            field[row][column].opened = true;
-            field[row][column].flagged = false;
-        } else if (clickType === "right") {
-            field[row][column].flagged = true;
-        }
+        const status = {...this.state.status};
+        updateState();
         this.setState({
-            field: field,
+            field,
+            status,
         });
+
+        //todo: Test it
+        function updateState() {
+            const cell = field[row][column];
+            if (status.gameEnded || cell.opened) return;
+            if (!status.gameStarted) status.gameStarted = true;
+            if (clickType === "left") {
+                cell.opened = true;
+                cell.flagged = false;
+                if (cell.mine) status.gameEnded = true;
+            } else if (clickType === "right") cell.flagged = true;
+        }
     };
 }
 
@@ -72,7 +86,8 @@ function ControlPanel(props) {
         <LogoPanel/>
         <StatusPanel
             flagsNum={props.flagsNum}
-            timeElapsed={props.timeElapsed}
+            // timeElapsed={props.timeElapsed}
+            status={props.status}
         />
     </div>;
 }
@@ -93,7 +108,8 @@ function StatusPanel(props) {
             className={"reset"}>Reset
         </button>
         <Timer
-            timeElapsed={props.timeElapsed}
+            // timeElapsed={props.timeElapsed}
+            status={props.status}
         />
     </div>;
 }
@@ -105,10 +121,59 @@ function FlagsCounter(props) {
     </p>;
 }
 
-function Timer(props) {
-    return <p className={"timer"}>
-        {props.timeElapsed}
-    </p>;
+class Timer extends React.Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            startDate: null,
+            timeElapsed: 0,
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        // super.componentDidUpdate(prevProps, prevState);
+        if (!this.props.status.gameEnded &&
+            this.props.status.gameStarted &&
+            !prevProps.status.gameStarted) {
+            this.setState(({
+                startDate: Date.now(),
+            }));
+            this.timerId = setInterval(this.updateTimeElapsed, 1000); //todo: Does it work? <-
+        }
+        if (this.state.gameEnded) {
+            clearTimeout(this.timerId);
+        }
+    }
+
+    componentDidMount() {
+        console.log(this.state.startDate);
+        console.log(this.state.timeElapsed);
+        if (!this.props.status.gameEnded &&
+            this.props.status.gameStarted) {
+            this.setState(({
+                startDate: Date.now(),
+            }));
+            this.timerId = setInterval(this.updateTimeElapsed, 1000); //todo: Does it work? <-
+        }
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timerId);
+    }
+
+    render() {
+        return <p className={"timer"}>
+            {this.state.timeElapsed}
+        </p>;
+    }
+
+    updateTimeElapsed = () => {
+        console.log(this.state.startDate);
+        console.log(this.state.timeElapsed);
+        this.setState((state, props) => ({
+            timeElapsed: Math.floor((Date.now() - state.startDate) / 1000),
+        }));
+    };
 }
 
 function Field(props) {
