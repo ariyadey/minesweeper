@@ -163,11 +163,12 @@ class Timer extends React.Component {
         super(props, context);
         this.state = {
             startDate: null,
-            timeElapsed: 0,
+            secondsElapsed: "00",
+            minutesElapsed: 0,
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    componentDidUpdate(prevProps, prevState, snapshot) {
         //todo: Figure out why the following line of code is problematic
         // super.componentDidUpdate(prevProps, prevState);
         if (!this.props.status.gameEnded &&
@@ -185,13 +186,14 @@ class Timer extends React.Component {
 
     render() {
         return <p className={"timer"}>
-            {this.state.timeElapsed}
+            {this.state.minutesElapsed}:{this.state.secondsElapsed}
         </p>;
     }
 
     updateTimeElapsed = () => {
         this.setState((state) => ({
-            timeElapsed: Math.floor((Date.now() - state.startDate) / 1000),
+            secondsElapsed: ("0" + Math.floor((Date.now() - state.startDate) / 1000 % 60)).slice(-2),
+            minutesElapsed: Math.floor((Date.now() - state.startDate) / 1000 / 60),
         }));
     };
 }
