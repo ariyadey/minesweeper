@@ -224,15 +224,15 @@ function Row(props) {
 
 //todo: Consider handling the clicks on disabled cells right here
 function Cell(props) {
-    const unopened = <span className={"cell"}/>;
-    const flagImage = <img className={"cell"} id={"flag"} alt={"flag"} src={target}/>;
-    const mineImage = <img className={"cell"} alt={"mine"} src={fired}/>;
+    const unopened = <span className={"cell"} id={"unopened"}/>;
     const openedClear = <div
         className={"cell"}
         id={"opened-clear"}
     >
         {props.cell.minesAround > 0 && props.cell.minesAround}
     </div>;
+    const flagImage = <img className={"cell"} id={"flag"} alt={"flag"} src={target}/>;
+    const mineImage = <img className={"cell"} id={"mine"} alt={"mine"} src={fired}/>;
 
     let cellStatus;
     if (props.cell.opened) {
