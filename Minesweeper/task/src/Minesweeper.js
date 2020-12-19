@@ -35,20 +35,31 @@ export default class Minesweeper extends React.Component {
     }
 
     //todo: Optimize it
+    //todo: Refactor it
     getRandomField = (rows, columns, mines) => {
         const rowsArr = [...Array(rows)]
             .map(() => [...Array(columns)]
                 .map(() => ({
                     opened: false,
                     flagged: false,
-                    mine: false,
+                    mined: false,
+                    traversed: false,   //todo: WARNING! Watch out potential bugs
+                    minesAround: 0,
                 })));
         let minesPut = 0;
         while (minesPut < mines) {
             const row = Math.floor(Math.random() * (rows));
             const column = Math.floor(Math.random() * (columns));
-            if (!rowsArr[row][column].mine) {
-                rowsArr[row][column].mine = true;
+            if (!rowsArr[row][column].mined) {
+                rowsArr[row][column].mined = true;
+                if (row > 0 && column > 0) rowsArr[row - 1][column - 1].minesAround++;
+                if (row > 0) rowsArr[row - 1][column].minesAround++;
+                if (row > 0 && column < rowsArr[0].length - 1) rowsArr[row - 1][column + 1].minesAround++;
+                if (column > 0) rowsArr[row][column - 1].minesAround++;
+                if (column < rowsArr[0].length - 1) rowsArr[row][column + 1].minesAround++;
+                if (row < rowsArr.length - 1 && column > 0) rowsArr[row + 1][column - 1].minesAround++;
+                if (row < rowsArr.length - 1) rowsArr[row + 1][column].minesAround++;
+                if (row < rowsArr.length - 1 && column < rowsArr[0].length - 1) rowsArr[row + 1][column + 1].minesAround++;
                 minesPut++;
             }
         }
@@ -56,26 +67,44 @@ export default class Minesweeper extends React.Component {
     };
 
     //todo: Make the game more usable by modifying conditions
+    //todo: Refactor it
     handleClick = (clickType, row, column) => {
-        const field = this.state.field.slice();
+        // const field = this.state.field.slice(); //todo: WARNING! It's still a shallow copy
+        const field = JSON.parse(JSON.stringify(this.state.field)); //todo: Test it
         const status = {...this.state.status};
-        updateState();
+        const cell = field[row][column];
+        if (status.gameEnded || cell.opened) return;
+        if (!status.gameStarted) status.gameStarted = true;
+        if (clickType === "left") {
+            cell.opened = true;
+            cell.flagged = false;
+            if (cell.mined) status.gameEnded = true;
+            else expandAround(row, column);
+        } else if (clickType === "right" && this.getRemainedFlags() > 0) cell.flagged = true;
+
+        function expandAround(r, c) {
+            if (field[r][c].traversed) return;
+
+            field[r][c].traversed = true;
+            field[r][c].opened = true;
+
+            if (field[r][c].minesAround === 0) {
+                if (r > 0 && c > 0) expandAround(r - 1, c - 1);
+                if (r > 0) expandAround(r - 1, c);
+                if (r > 0 && c < field[0].length - 1) expandAround(r - 1, c + 1);
+                if (c > 0) expandAround(r, c - 1);
+                if (c < field[0].length - 1) expandAround(r, c + 1);
+                if (r < field.length - 1 && c > 0) expandAround(r + 1, c - 1);
+                if (r < field.length - 1) expandAround(r + 1, c);
+                if (r < field.length - 1 && c < field[0].length - 1) expandAround(r + 1, c + 1);
+            }
+        }
+
         this.setState({
             field,
             status,
         });
-
-        function updateState() {
-            const cell = field[row][column];
-            if (status.gameEnded || cell.opened) return;
-            if (!status.gameStarted) status.gameStarted = true;
-            if (clickType === "left") {
-                cell.opened = true;
-                cell.flagged = false;
-                if (cell.mine) status.gameEnded = true;
-            } else if (clickType === "right") cell.flagged = true;
-        }
-    };
+    }
 
     getRemainedFlags = () => {
         let flags = 0;
@@ -195,11 +224,15 @@ function Row(props) {
 function Cell(props) {
     const flagImage = <img className={"flag"} alt={"flag"} src={target}/>;
     const mineImage = <img className={"mine"} alt={"mine"} src={fired}/>;
-    const openedClear = <div className={"opened-clear"}/>;
+    const openedClear = <div
+        className={"opened-clear"}
+    >
+        {props.cell.minesAround > 0 && props.cell.minesAround}
+    </div>;
 
     let cellStatus = null;
     if (props.cell.opened) {
-        if (props.cell.mine) {
+        if (props.cell.mined) {
             cellStatus = mineImage;
         } else {
             cellStatus = openedClear;
