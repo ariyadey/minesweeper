@@ -224,15 +224,17 @@ function Row(props) {
 
 //todo: Consider handling the clicks on disabled cells right here
 function Cell(props) {
-    const flagImage = <img className={"flag"} alt={"flag"} src={target}/>;
-    const mineImage = <img className={"mine"} alt={"mine"} src={fired}/>;
+    const unopened = <span className={"cell"}/>;
+    const flagImage = <img className={"cell"} id={"flag"} alt={"flag"} src={target}/>;
+    const mineImage = <img className={"cell"} alt={"mine"} src={fired}/>;
     const openedClear = <div
-        className={"opened-clear"}
+        className={"cell"}
+        id={"opened-clear"}
     >
         {props.cell.minesAround > 0 && props.cell.minesAround}
     </div>;
 
-    let cellStatus = null;
+    let cellStatus;
     if (props.cell.opened) {
         if (props.cell.mined) {
             cellStatus = mineImage;
@@ -241,11 +243,13 @@ function Cell(props) {
         }
     } else if (props.cell.flagged) {
         cellStatus = flagImage;
+    } else {
+        cellStatus = unopened;
     }
 
     //todo: Use className and Id properly to pass the test
     return <button
-        className={"cell"}
+        className={"cell-container"}
         onClick={() => props.onClick("left")}
         onContextMenu={(e) => {
             e.preventDefault();

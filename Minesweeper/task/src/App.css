@@ -102,7 +102,7 @@
     flex-direction: row;
 }
 
-.cell {
+.cell-container {
     background: var(--background-color);
     border: #222725 outset thin;
     border-radius: 10%;
@@ -112,7 +112,11 @@
     box-shadow: 0 0 1px 1px var(--accent-color);
 }
 
-.opened-clear {
+.cell {
+
+}
+
+#opened-clear {
     box-shadow: 0 0 1px 1px var(--accent-color);
     background: var(--accent-color);
     height: inherit;
@@ -122,11 +126,11 @@
     font-size: 1.5rem;
 }
 
-.mine {
+#mine {
     height: inherit;
 }
 
-.flag {
+#flag {
     height: inherit;
     color: red;
 }
