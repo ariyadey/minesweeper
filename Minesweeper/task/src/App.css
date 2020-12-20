@@ -89,6 +89,7 @@
     box-shadow: 0 0 5px 3px var(--accent-color);
     background: var(--background-color);
     color: var(--white-color);
+    cursor: pointer;
 }
 
 .field {
