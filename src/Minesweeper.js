@@ -2,9 +2,9 @@
 
 import React from "react";
 import "./App.css";
-import logo from "./asset/logo.svg";
-import fired from "./asset/fired.svg";
-import target from "./asset/target.svg";
+import logo from "./resources/logo.svg";
+import fired from "./resources/fired.svg";
+import target from "./resources/target.svg";
 
 //todo: Think about where to put the game attributes
 export default class Minesweeper extends React.Component {
