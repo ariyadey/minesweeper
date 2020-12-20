@@ -1,6 +1,6 @@
 {
   "homepage": "http://ariya-mms.github.io/minesweeper",
-  "name": "minesweeper_react",
+  "name": "minesweeper",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
