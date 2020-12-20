@@ -6,7 +6,7 @@ import logo from "./asset/logo.svg";
 import fired from "./asset/fired.svg";
 import target from "./asset/target.svg";
 
-// todo: Think about where to put the game attributes
+//todo: Think about where to put the game attributes
 export default class Minesweeper extends React.Component {
     #rows = 9;
     #columns = 8;
@@ -18,7 +18,8 @@ export default class Minesweeper extends React.Component {
             field: this.getRandomField(this.#rows, this.#columns, this.#mines),
             situation: {
                 gameStarted: false,
-                gameEnded: false,
+                gameLost: false,
+                gameWon: false,
             },
         }
     }
@@ -28,11 +29,12 @@ export default class Minesweeper extends React.Component {
             <div className={"main-block"}>
                 <ControlPanel
                     remainedFlags={this.getRemainedFlags()}
-                    status={this.state.status}
+                    situation={this.state.situation}
+                    onResetClick={() => this.handleResetClick(this.#rows, this.#columns, this.#mines)}
                 />
                 <Field
                     rowsArr={this.state.field}
-                    onClick={(clickType, row, column) => this.handleClick(clickType, row, column)}
+                    onClick={(clickType, row, column) => this.handleCellClick(clickType, row, column)}
                 />
             </div>
         </div>;
@@ -72,13 +74,21 @@ export default class Minesweeper extends React.Component {
 
     //todo: Make the game more usable by modifying conditions
     //todo: Refactor it
-    handleClick = (clickType, row, column) => {
+    handleCellClick = (clickType, row, column) => {
         // const field = this.state.field.slice(); //todo: WARNING! It's still a shallow copy
         const field = JSON.parse(JSON.stringify(this.state.field)); //todo: Test it
-        const status = {...this.state.status};
+        const situation = {...this.state.situation};
         const cell = field[row][column];
-        if (status.gameEnded || cell.opened) return;
-        if (!status.gameStarted) status.gameStarted = true;
+        if (situation.gameWon || situation.gameLost || cell.opened) return;
+        if (!situation.gameStarted) {
+            if (clickType === "left" && cell.mined) {
+                console.log(this.#rows, this.#columns, this.#mines);
+                // return;
+                return this.handleResetClick(this.#rows, this.#columns, this.#mines);
+                // return this.handleCellClick(clickType, row, column);
+            }
+            situation.gameStarted = true;
+        }
         if (clickType === "left") {
             cell.opened = true;
             cell.flagged = false;
@@ -105,8 +115,12 @@ export default class Minesweeper extends React.Component {
         }
 
         this.setState({
-            field,
-            status,
+            field: this.getRandomField(rows, columns, mines),
+            situation: {
+                gameStarted: false,
+                gameLost: false,
+                gameWon: false,
+            },
         });
     }
 
@@ -129,7 +143,8 @@ function ControlPanel(props) {
         <LogoPanel/>
         <StatusPanel
             remainedFlags={props.remainedFlags}
-            status={props.status}
+            situation={props.situation}
+            onResetClick={props.onResetClick}
         />
     </div>;
 }
@@ -182,8 +197,7 @@ class Timer extends React.Component {
                 startDate: Date.now(),
             }));
             this.timerId = setInterval(this.updateTimeElapsed, 1000);
-        }
-        if (this.props.status.gameEnded) {
+        } else if (this.props.situation.gameWon || this.props.situation.gameLost) {
             clearInterval(this.timerId);
         }
     }
