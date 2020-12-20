@@ -92,9 +92,27 @@ export default class Minesweeper extends React.Component {
         if (clickType === "left") {
             cell.opened = true;
             cell.flagged = false;
-            if (cell.mined) status.gameEnded = true;
+            if (cell.mined) gameOver();
             else expandAround(row, column);
         } else if (clickType === "right" && this.getRemainedFlags() > 0) cell.flagged = true;
+        if (isGameWon()) situation.gameWon = true; //todo: You can make it more concise
+
+        this.setState({
+            field,
+            situation: situation,
+        });
+
+        function gameOver() {
+            situation.gameLost = true;
+            for (const row of field) {
+                for (const cell of row) {
+                    if (cell.mined) {
+                        cell.flagged = false;
+                        cell.opened = true;
+                    }
+                }
+            }
+        }
 
         function expandAround(r, c) {
             if (field[r][c].traversed) return;
@@ -114,6 +132,19 @@ export default class Minesweeper extends React.Component {
             }
         }
 
+        function isGameWon() {
+            for (const row of field) {
+                for (const cell of row) {
+                    if (!cell.opened && !cell.flagged) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
+    handleResetClick = (rows, columns, mines) => {
         this.setState({
             field: this.getRandomField(rows, columns, mines),
             situation: {
@@ -165,7 +196,7 @@ function StatusPanel(props) {
             className={"reset"}>Reset
         </button>
         <Timer
-            status={props.status}
+            situation={props.situation}
         />
     </div>;
 }
@@ -190,15 +221,22 @@ class Timer extends React.Component {
     componentDidUpdate(prevProps, prevState, snapshot) {
         //todo: Figure out why the following line of code is problematic
         // super.componentDidUpdate(prevProps, prevState);
-        if (!this.props.status.gameEnded &&
-            this.props.status.gameStarted &&
-            !prevProps.status.gameStarted) {
+        if (this.props.situation.gameStarted && !prevProps.situation.gameStarted) {
             this.setState(({
                 startDate: Date.now(),
             }));
             this.timerId = setInterval(this.updateTimeElapsed, 1000);
         } else if (this.props.situation.gameWon || this.props.situation.gameLost) {
             clearInterval(this.timerId);
+        } else if (
+            !this.props.situation.gameStarted &&
+            (prevProps.situation.gameStarted || prevProps.situation.gameWon || prevProps.situation.gameLost)) {
+
+            clearInterval(this.timerId);
+            this.setState({
+                secondsElapsed: "00",
+                minutesElapsed: 0,
+            })
         }
     }
 
