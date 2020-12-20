@@ -192,9 +192,10 @@ function StatusPanel(props) {
         <FlagsCounter
             remainedFlags={props.remainedFlags}
         />
-        <button
-            className={"reset"}>Reset
-        </button>
+        <Reset
+            situation={props.situation}
+            onResetClick={props.onResetClick}
+        />
         <Timer
             situation={props.situation}
         />
@@ -206,6 +207,26 @@ function FlagsCounter(props) {
     return <p className={"flags-counter"}>
         {props.remainedFlags}
     </p>;
+}
+
+function Reset(props) {
+    //todo: Replace with emojis
+    //todo: Add emoji to guidance comments below
+    // const gameNotStarted = "&#128566;", gameStarted = "&#128526;", gameLost = "&#128577;", gameWon = "&#128525;";
+    const gameNotStarted = "Reset", gameStarted = ":)", gameLost = ":/", gameWon = ":))";
+
+    let situation;
+    if (!props.situation.gameStarted) situation = gameNotStarted;
+    else if (props.situation.gameLost) situation = gameLost;
+    else if (props.situation.gameWon) situation = gameWon;
+    else if (props.situation.gameStarted) situation = gameStarted;
+
+    return <button
+        className={"reset"}
+        onClick={props.onResetClick}
+    >
+        {situation}
+    </button>
 }
 
 class Timer extends React.Component {
