@@ -6,13 +6,17 @@ import logo from "./asset/logo.svg";
 import fired from "./asset/fired.svg";
 import target from "./asset/target.svg";
 
+// todo: Think about where to put the game attributes
 export default class Minesweeper extends React.Component {
+    #rows = 9;
+    #columns = 8;
+    #mines = 10;
+
     constructor(props, context) {
         super(props, context);
-        const rows = 9, columns = 8, mines = 10;
         this.state = {
-            field: this.getRandomField(rows, columns, mines),
-            status: {
+            field: this.getRandomField(this.#rows, this.#columns, this.#mines),
+            situation: {
                 gameStarted: false,
                 gameEnded: false,
             },
